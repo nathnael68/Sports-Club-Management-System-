@@ -43,7 +43,6 @@ The system enforces a clean Role-Based Access Control (RBAC) hierarchy across cl
 graph TD
     ADMIN["👑 Club Administrator"] --> COACH["🏆 Head Coach"]
     ADMIN --> PHYSIO["🩺 Team Physiotherapist"]
-    ADMIN --> STAFF["📋 Support Staff"]
     COACH --> ATHLETE["⚡ Club Athlete"]
     PHYSIO --> ATHLETE
 ```
@@ -351,6 +350,20 @@ graph TD
 2. **Physio Screen Flow**: Operations Overview $\rightarrow$ Medical Incident Center $\rightarrow$ Injury Logging Modal $\rightarrow$ Severity Assignment $\rightarrow$ 1-Click RTP Clearance $\rightarrow$ Facility Maintenance.
 3. **Admin Screen Flow**: System Overview $\rightarrow$ User Management Directory $\rightarrow$ RBAC Account Creation $\rightarrow$ 1-Click CSV Audit Reports.
 4. **Athlete Screen Flow**: Readiness Hub $\rightarrow$ Scheduled Sessions $\rightarrow$ RPE Exertion Slider $\rightarrow$ ACWR Recovery Gauge $\rightarrow$ Historical Telemetry.
+
+#### Athlete Portal Showcase (Live UI Validations):
+
+**1. Full Readiness Hub & Recharts Workload Curve**:
+![Athlete Dashboard Full Page](./athlete_dashboard_full.png)
+
+**2. Interactive Session RPE Exertion Rating Modal**:
+![Athlete RPE Exertion Slider Modal](./athlete_rpe_modal.png)
+
+**3. Training Sessions & Drills Schedule**:
+![Athlete Training Schedule View](./athlete_training_schedule.png)
+
+**4. Historical Physical Performance Telemetry**:
+![Athlete Performance Telemetry History](./athlete_telemetry_history.png)
 
 ### 8.3 Layout Architecture: Collapsible Left Vertical Navigation
 - **Dual Display Modes**:

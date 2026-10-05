@@ -1,6 +1,6 @@
-# 📖 Sports Club AI — Complete User Manual & Platform Guide
+# 📖 Sports Club AI — Complete User Manual & Platform Guide (v1.0 SaaS)
 
-Welcome to the official **Sports Club AI** user manual and comprehensive platform guide. This document provides an exhaustive overview of the platform's architecture, role-based workflows, step-by-step functional walkthroughs, machine learning predictive models, database administration, and API specifications.
+Welcome to the official **Sports Club AI** user manual and comprehensive platform guide. This document provides an exhaustive overview of the platform's architecture, role-based workflows, step-by-step functional walkthroughs, machine learning predictive models, database administration, interactive visual charts, in-app notification center, and API specifications.
 
 ---
 
@@ -11,11 +11,13 @@ Welcome to the official **Sports Club AI** user manual and comprehensive platfor
 3. [Role-Based Access Control (RBAC) Matrix](#3-role-based-access-control-rbac-matrix)
 4. [Getting Started & Quick Setup](#4-getting-started--quick-setup)
 5. [Step-by-Step Functionality Guides](#5-step-by-step-functionality-guides)
-   - [🔑 5.1 Authentication & Role Switching](#-51-authentication--role-switching)
-   - [🏆 5.2 Coach & Admin Operations](#-52-coach--admin-operations)
-   - [⚡ 5.3 Athlete Self-Service Portal](#-53-athlete-self-service-portal)
-   - [🩺 5.4 Physiotherapist & Staff Operations](#-54-physiotherapist--staff-operations)
-   - [👤 5.5 Athlete Profile Deep-Dive](#-55-athlete-profile-deep-dive)
+   - [🔑 5.1 Redesigned Interactive Login & Theme Engine](#-51-redesigned-interactive-login--theme-engine)
+   - [🔔 5.2 Header Notification Center Drawer](#-52-header-notification-center-drawer)
+   - [📊 5.3 Interactive Recharts Workload Analytics](#-53-interactive-recharts-workload-analytics)
+   - [👑 5.4 Admin Console & Memberships Hub](#-54-admin-console--memberships-hub)
+   - [🏆 5.5 Head Coach Squad Hub & Telemetry](#-55-head-coach-squad-hub--telemetry)
+   - [🩺 5.6 Physiotherapist Medical Incident & Return-to-Play Center](#-56-physiotherapist-medical-incident--return-to-play-center)
+   - [⚡ 5.7 Athlete Self-Service Portal](#-57-athlete-self-service-portal)
 6. [Machine Learning & Predictive Analytics Engine](#6-machine-learning--predictive-analytics-engine)
 7. [REST API Endpoint Reference](#7-rest-api-endpoint-reference)
 8. [Troubleshooting & Frequently Asked Questions](#8-troubleshooting--frequently-asked-questions)
@@ -27,12 +29,13 @@ Welcome to the official **Sports Club AI** user manual and comprehensive platfor
 **Sports Club AI** is an enterprise-grade sports management and predictive analytics platform engineered for modern athletic clubs, academies, and professional teams. It bridges physical athletic training with data science to optimize performance and minimize preventable soft-tissue injuries.
 
 ### Key Platform Highlights
-- 🔮 **Predictive Injury Management**: Utilizes machine learning models (`scikit-learn` Logistic Regression & Linear Regression pipelines) to calculate real-time injury risk probabilities based on Acute-to-Chronic Workload Ratios (ACWR), session RPE (Rate of Perceived Exertion), and historical medical logs.
-- ⚡ **Role-Tailored Dashboards**: Custom interfaces designed specifically for Coaches, Athletes, Physiotherapists, and Operations Staff.
-- 📅 **Training & Attendance Analytics**: Tracks session schedules, focus areas (Tactics, Endurance, Strength), intensity levels, minutes late, and athlete-reported exertion scores.
-- 🩺 **Medical & Rehabilitation Tracking**: Full injury logging timeline (Hamstring, ACL, Groin, etc.), severity tracking, return-to-play dates, and recovery notes.
-- 🏛️ **Resource & Asset Management**: Monitors facility availability (Pitches, Gyms, Pools) and equipment inventory conditions (`Good`, `Fair`, `Broken`).
-- 💳 **Membership Billing**: Subscriptions and plan management (`Standard`, `Premium`, `Junior`) for modern athletic club operations.
+- 🔮 **Predictive Injury Management**: Utilizes machine learning models (`scikit-learn` Logistic Regression & Gradient Boosting Regressor pipelines) to calculate real-time injury risk probabilities based on Acute-to-Chronic Workload Ratios (ACWR), session RPE (Rate of Perceived Exertion), and historical medical logs.
+- 📊 **Interactive Recharts Telemetry**: Renders live visual workload progression graphs comparing 7-Day Acute Load (ATL) against 28-Day Chronic Baseline (CTL) with dynamic ACWR threshold zones ($0.8\text{--}1.3$ optimal, $>1.5$ danger line).
+- 🔔 **Real-Time Notification Center Drawer**: Top-header bell popup `[🔔]` displaying instant unread alerts for high workload spikes, Return-to-Play clearances, session additions, and membership renewals.
+- 🎨 **Redesigned Interactive Login Experience**: Modern glassmorphism login interface supporting dark and light modes, interactive quick demo role selector tiles (**Admin**, **Coach**, **Athlete**, **Physio**), and password visibility eye toggle (`Eye` / `EyeOff`).
+- ⚡ **Collapsible Vertical Navigation Sidebar (`SidebarLayout.tsx`)**: Sleek left vertical navigation panel supporting expanded (280px) and compact mini-rail (72px) modes with panel collapse toggle `[◀ / ▶]` and `localStorage` preference caching.
+- 👑 **Admin Memberships & Audit Center**: Complete membership subscription tier manager (`Basic`, `Pro Athlete`, `Elite First-Team`) and 1-Click CSV Reports Exporters (Users, Attendance, Facilities, Memberships).
+- 🩺 **Medical & Rehabilitation Tracking**: Full injury logging timeline, severity grading, return-to-play dates, and 1-click clinical clearance workflow.
 
 ---
 
@@ -41,7 +44,7 @@ Welcome to the official **Sports Club AI** user manual and comprehensive platfor
 ```
                                  ┌─────────────────────────────────┐
                                  │     React 19 + TypeScript FE    │
-                                 │    (Vite 8, Tailwind v4, Axios) │
+                                 │   (Vite 8, Recharts, Tailwind)  │
                                  └────────────────┬────────────────┘
                                                   │ HTTP / REST (JWT)
                                  ┌────────────────▼────────────────┐
@@ -57,7 +60,7 @@ Welcome to the official **Sports Club AI** user manual and comprehensive platfor
 
 | Layer | Component | Version / Technologies |
 | :--- | :--- | :--- |
-| **Frontend Client** | Single Page Application | React 19.2, TypeScript 6.0, Vite 8.1, Tailwind CSS 4.3, Lucide Icons |
+| **Frontend Client** | Single Page Application | React 19.2, TypeScript 6.0, Vite 8.1, Tailwind CSS 4.3, Recharts 2.15, Lucide Icons |
 | **Backend API** | Async REST Framework | FastAPI 0.115, Pydantic v2.9, Uvicorn, Python 3.11 |
 | **Database** | Relational Engine | SQLite (`sportsclub.db` dev) / PostgreSQL 16 (Docker Compose) |
 | **Machine Learning** | Data Pipeline & Analytics | `scikit-learn`, `pandas`, `numpy`, `joblib` artifacts |
@@ -71,15 +74,15 @@ The system enforces strict permission scoping across 5 distinct roles:
 
 | Permission / Action | Admin | Coach | Athlete | Physiotherapist | Staff |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Manage Users & Admins** | ✅ Full | ❌ | ❌ | ❌ | ❌ |
-| **Read / Write Athlete Profiles** | ✅ Full | ✅ Write | 🔒 Self Only | ✅ Read | ✅ Read |
+| **Manage Users & RBAC Roles** | ✅ Full | ❌ | ❌ | ❌ | ❌ |
+| **Memberships & Billing CRUD** | ✅ Full | 🔒 Read | 🔒 Self Plan | 🔒 Read | 🔒 Read |
+| **1-Click CSV Audit Exports** | ✅ Full | 🔒 Read | ❌ | 🔒 Read | 🔒 Read |
+| **Read / Write Squad Telemetry** | ✅ Full | ✅ Write | 🔒 Self Only | ✅ Read | ✅ Read |
 | **Create Training Sessions** | ✅ Full | ✅ Write | 🔒 Read Assigned | 🔒 Read | 🔒 Read |
 | **Log Attendance & Session RPE** | ✅ Full | ✅ Write | 🔒 Submit Self | 🔒 Read | ✅ Write |
-| **Record Performance Metrics** | ✅ Full | ✅ Write | 🔒 Self Metrics | ✅ Read | 🔒 Read |
-| **Manage Medical & Injury Records**| ✅ Full | 🔒 Read | 🔒 Self History | ✅ Full Write | 🔒 Read |
+| **Manage Medical Records & RTP** | ✅ Full | 🔒 Read | 🔒 Self History | ✅ Full Write | 🔒 Read |
 | **Train ML Models (`/api/ml/train`)**| ✅ Full | ✅ Execute | ❌ | ❌ | ❌ |
 | **Facilities & Equipment CRUD** | ✅ Full | 🔒 Read | 🔒 Read | 🔒 Read | ✅ Full Write |
-| **Membership & Billing Operations** | ✅ Full | 🔒 Read | 🔒 Self Plan | 🔒 Read | ✅ Full Write |
 
 ---
 
@@ -93,210 +96,123 @@ Open your terminal in the workspace directory and execute:
 cd backend
 .venv\Scripts\uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
 
-# 2. Open a second terminal to start React Frontend (Port 5173)
+# 2. Open a second terminal to start React Frontend (Port 5173 / 5175)
 cd frontend
 npm run dev
 ```
 
-### Step 2: Seed Mock Data & Initialize ML Models
-To populate the database with realistic demo athletes, sessions, performance metrics, and train initial ML pipelines:
+### Step 2: Pre-seeded Demo Accounts
 
-```powershell
-cd backend
-.venv\Scripts\python seed.py
-```
+| Role | Email | Password | Direct Dashboard Link |
+| :--- | :--- | :--- | :--- |
+| 👑 **Administrator** | `admin@example.com` | `admin123` | [http://localhost:5173/dashboard/admin](http://localhost:5173/dashboard/admin) |
+| 🏆 **Head Coach** | `coach@example.com` | `coach123` | [http://localhost:5173/dashboard/coach](http://localhost:5173/dashboard/coach) |
+| 🩺 **Physiotherapist** | `physio@example.com` | `physio123` | [http://localhost:5173/dashboard/staff](http://localhost:5173/dashboard/staff) |
+| ⚡ **Athlete** | `athlete@example.com` | `athlete123` | [http://localhost:5173/dashboard/athlete](http://localhost:5173/dashboard/athlete) |
 
 ---
 
 ## 5. Step-by-Step Functionality Guides
 
-### 🔑 5.1 Authentication & Role Switching
+### 🔑 5.1 Redesigned Interactive Login & Theme Engine
+1. Navigate to `http://localhost:5173/login`.
+2. **Theme Switcher**: Click the top-right `Sun` / `Moon` button to toggle seamlessly between **Dark Mode** and **Light Mode**.
+3. **Password Eye Toggle**: Click the eye icon (`Eye` / `EyeOff`) to view or hide password characters.
+4. **Quick Demo Tiles**: Click any of the 4 role cards (**Admin**, **Coach**, **Athlete**, **Physio**) to automatically autofill demo credentials and highlight the active role pill.
+5. Click **Sign In to Dashboard** to authenticate.
 
-1. Open your browser and navigate to **`http://localhost:5173`**.
-2. If unauthenticated, you will be automatically directed to the **Sign In** screen.
-3. You can log in manually using email and password, or click any of the **Quick Demo Access** role cards:
-   - 🛡️ **Admin**: Click **Admin** (loads `admin@example.com` / `admin123`).
-   - 🏆 **Coach**: Click **Coach** (loads `coach@example.com` / `coach123`).
-   - ⚡ **Athlete**: Click **Athlete** (loads `athlete@example.com` / `athlete123`).
-   - 🩺 **Physio / Staff**: Click **Physio** (loads `physio@example.com` / `physio123`).
-4. Click **Sign In**. The platform will decode the user's JWT token and route to the corresponding dashboard.
+### 🔔 5.2 Header Notification Center Drawer
+1. Located in the top-right header bar of all dashboards (`SidebarLayout.tsx`).
+2. **Unread Counter**: A red badge on the bell icon `[🔔]` displays total unread notifications.
+3. **Interactive Popover**: Click the bell icon to open the glassmorphism drawer featuring:
+   - High Workload ACWR Alerts (Red)
+   - Return-to-Play Medical Clearances (Amber)
+   - Training Schedule Additions (Cyan)
+   - Membership Renewals (Green)
+4. Click **Mark all read** or individual trash icons to clear notifications.
 
----
+### 📊 5.3 Interactive Recharts Workload Analytics
+1. Embedded on the **Athlete Portal**, **Coach AI Risk Tab**, and **Athlete Profile** pages.
+2. Displays the **7-Day Acute Load (ATL)** glowing green curve alongside the **28-Day Chronic Baseline (CTL)** blue dashed line.
+3. Hovering your mouse over any data point reveals a dynamic tooltip showing exact daily Arbitrary Units (AU) and ACWR fatigue status (`Optimal` vs `High Risk`).
 
-### 🏆 5.2 Coach & Admin Operations
+### 👑 5.4 Admin Console & Memberships Hub
+1. **Overview Tab**: Displays KPI summary cards (`Total Users`, `Registered Grounds`, `Memberships`, `System Security`) and recent user registrations.
+2. **User Directory Tab**: Search, filter by role, toggle account active/suspended status, and delete accounts.
+3. **Memberships & Billing Tab**: Assign subscription tiers (`Basic`, `Pro Athlete`, `Elite First-Team`), update billing amounts, and track subscription renewal dates.
+4. **CSV Reports & Exports Tab**: 1-click downloadable `.csv` files for Users, Attendance, Facilities, and Memberships.
 
-#### 1. Viewing Team Roster & Injury Risk Overview
-- **Path**: `/dashboard/coach`
-- **Action**: 
-  - Review the **High Injury Risk Alert** banner at the top of the dashboard. This displays athletes flagged with high acute-to-chronic workload ratios (ACWR > 1.5) or elevated injury probabilities calculated by the ML model.
-  - Use the search bar to search athletes by full name, playing position (`GK`, `DEF`, `MID`, `FWD`), or jersey number.
+### 🏆 5.5 Head Coach Squad Hub & Telemetry
+1. **Squad Roster View**: Search and filter squad players by position (`GK`, `DEF`, `MID`, `FWD`).
+2. **Training Sessions View**: Schedule tactical drills with duration, facility, and intensity level.
+3. **Attendance & RPE View**: Log athlete presence (`Present`, `Late`, `Absent`) and Rate of Perceived Exertion ($1\text{--}10$).
+4. **AI Risk Analytics View**: Displays squad-wide ACWR workload metrics, fitness readiness scores, and plain-English AI recovery recommendations. Includes a **Retrain ML Model** button.
 
-#### 2. Managing Training Sessions
-- **Path**: `/dashboard/coach` -> **Training Sessions Tab**
-- **Step-by-Step**:
-  1. Click **New Training Session** button.
-  2. Enter **Title** (e.g., `Pre-Match Tactical Drill`), select **Facility** (e.g., `Main Pitch`), set **Date/Time**, **Duration** (minutes), and **Intensity** (`Low`, `Medium`, `High`).
-  3. Click **Create Session**. The new session will appear in the schedule calendar and notify assigned athletes.
+### 🩺 5.6 Physiotherapist Medical Incident & Return-to-Play Center
+1. **Active Injury Logger**: Record athlete injuries with body part, type (e.g. `Hamstring strain`), severity (`minor`, `moderate`, `severe`), and expected return date.
+2. **1-Click Return-to-Play Clearance**: Table listing active medical warnings. Clicking **Clear Return-to-Play** resolves the medical record and clears the player for match selection.
+3. **Facilities Manager**: Toggle ground and gym availability status (`Available` vs `Maintenance`).
+4. **Equipment Inventory**: Manage equipment counts and condition states (`Good`, `Fair`, `Damaged`).
 
-#### 3. Recording Athlete Performance Records
-- **Path**: `/dashboard/coach` -> **Log Performance Tab**
-- **Step-by-Step**:
-  1. Select an athlete from the dropdown list.
-  2. Input recorded data: **Distance Covered (km)**, **Top Speed (km/h)**, **Sprint Count**, **Average Heart Rate (BPM)**, and **Coach Match Rating (0-10)**.
-  3. Click **Submit Performance Record**. The system calculates training load (`Duration × RPE`) and updates the athlete's fitness trajectory.
+### ⚡ 5.7 Athlete Self-Service Portal
+1. **Readiness Hub Tab**: Visual ACWR Workload Gauge ($0.8\text{--}1.3$ optimal, $>1.5$ danger alert), Predicted Fitness Score ($0\text{--}100$), and AI Recovery Directive.
+2. **Rate Session RPE Modal**: Click **Rate Session RPE Exertion** on any completed drill, slide the exertion rating ($1\text{--}10$), and click **Submit**. The system instantly recalculates session workload ($Load = Duration \times RPE$) and refreshes your readiness metrics live!
+3. **Training Schedule Tab**: View upcoming drills, focus areas, and session times.
+4. **Performance Telemetry Tab**: Access historical telemetry logs including top speeds, sprint counts, distances, and heart rates.
 
-#### 4. Training Machine Learning Models
-- **Path**: `/dashboard/coach` -> **AI & Analytics Section**
-- **Step-by-Step**:
-  1. Click **Train Models Now**.
-  2. The backend queries recent training session logs, attendance RPE, and injury history, fits `StandardScaler` transformations, and trains `scikit-learn` models.
-  3. A success notification displays updated sample sizes and artifact paths (e.g., `injury_1.0.0.joblib`).
-
----
-
-### ⚡ 5.3 Athlete Self-Service Portal
-
-#### 1. Monitoring Fitness & Workload Indicators
-- **Path**: `/dashboard/athlete`
-- **Action**:
-  - Review your **Fitness Score (0-100)** progress card.
-  - Monitor your **Acute-to-Chronic Workload Ratio (ACWR)** gauge. Staying within the **0.8 – 1.3 "Sweet Spot"** indicates optimal conditioning; exceeding **1.5** triggers a high workload alert warning to prevent burnout.
-
-#### 2. Submitting Session RPE & Attendance
-- **Path**: `/dashboard/athlete` -> **My Training Schedule**
-- **Step-by-Step**:
-  1. Locate completed training sessions.
-  2. Click **Submit RPE**.
-  3. Select your Rate of Perceived Exertion on a scale of **1 (Very Easy)** to **10 (Maximal Effort)** and specify any minutes late.
-  4. Click **Confirm Submission**. This updates your personal workload calculations instantly.
-
----
-
-### 🩺 5.4 Physiotherapist & Staff Operations
-
-#### 1. Logging Athlete Medical & Injury Records
-- **Path**: `/dashboard/staff` -> **Injury Management Tab**
-- **Step-by-Step**:
-  1. Click **Log New Injury**.
-  2. Select **Athlete Name**, **Injury Type** (e.g., `Hamstring Strain`), **Body Part** (e.g., `Thigh`), **Severity** (`Minor`, `Moderate`, `Severe`), and **Occurred Date**.
-  3. Add rehabilitation notes and estimated return-to-play date.
-  4. Click **Save Injury Record**. The medical flag automatically updates on the Coach dashboard and athlete profile.
-
-#### 2. Facilities & Equipment Maintenance
-- **Path**: `/dashboard/staff` -> **Facilities & Equipment Tab**
-- **Step-by-Step**:
-  1. View facility status (`Main Pitch`, `Gym`, `Pool`) and toggle availability (`Available` / `Under Maintenance`).
-  2. Inspect equipment inventory table: update quantities and toggle equipment condition (`Good`, `Fair`, `Broken`).
-
-#### 3. Managing Membership Subscriptions
-- **Path**: `/dashboard/staff` -> **Memberships Tab**
-- **Step-by-Step**:
-  1. View active athlete memberships, billing plans (`Standard`, `Premium`, `Junior`), and start/end dates.
-  2. Click **Renew Plan** or **Update Status** (`Active`, `Expired`, `Suspended`).
-
----
-
-### 👤 5.5 Athlete Profile Deep-Dive
-
-- **Path**: Click any athlete name from Coach/Staff tables, or navigate to `/athlete/:id`.
-- **Functionality**:
-  - **Overview Banner**: Displays jersey number, playing position badge, age, height (cm), weight (kg), and nationality.
-  - **Performance Charts**: Interactive distance and top speed trends over recent matches and training sessions.
-  - **Medical History Timeline**: Chronological log of past injuries, severity ratings, and recovery notes.
-  - **Attendance Record**: Complete summary of session presence, tardiness, and average exertion.
-
----
-
-### 🛡️ 5.6 Admin Management Console Operations
-
-#### 1. Managing System User Accounts & Roles (UC-13)
-- **Path**: `/dashboard/admin`
-- **Step-by-Step**:
-  1. View executive stat cards for Total System Users, Active Athletes, Coaching Staff, and Facilities/Plans.
-  2. Use the search bar to find users by full name or email address, or filter by role (`Admin`, `Coach`, `Athlete`, `Physiotherapist`, `Staff`).
-  3. **Change User Role**: Click the role dropdown on any user row to instantly update their RBAC role.
-  4. **Toggle Account Status**: Click the **Active** / **Disabled** status badge to enable or disable account login access.
-  5. **Create New User**: Click **Add System User**, fill in Full Name, Email, Password, and Role, then click **Create User**.
-
-#### 2. System Reports & CSV Export Center (UC-12)
-- **Path**: `/dashboard/admin` -> **CSV Export Center**
-- **Step-by-Step**:
-  1. Click **Export CSV** under any of the report cards:
-     - **Squad Attendance Log**: Downloads `squad_attendance_report.csv` containing attendance statuses, late minutes, and RPE scores.
-     - **Facility Utilization**: Downloads `facility_utilization_report.csv` containing pitch/gym capacities and availability.
-     - **Financial Memberships**: Downloads `memberships_financial_report.csv` containing plan subscriptions, amounts, and statuses.
-     - **User Directory**: Downloads `system_users_directory.csv` containing all user accounts and roles.
+#### Visual Feature Gallery:
+- **Full Readiness Hub & Workload Graph**:
+  ![Athlete Dashboard Full View](./athlete_dashboard_full.png)
+- **Interactive RPE Rating Slider Modal**:
+  ![Athlete RPE Modal](./athlete_rpe_modal.png)
+- **Training Schedule**:
+  ![Athlete Training Schedule](./athlete_training_schedule.png)
+- **Performance Telemetry History**:
+  ![Athlete Telemetry History](./athlete_telemetry_history.png)
 
 ---
 
 ## 6. Machine Learning & Predictive Analytics Engine
 
-### 1. Acute-to-Chronic Workload Ratio (ACWR)
-$$\text{Acute Load} = \text{Average Daily Training Load over past 7 Days}$$
-$$\text{Chronic Load} = \text{Average Daily Training Load over past 28 Days}$$
-$$\text{ACWR} = \frac{\text{Acute Load}}{\text{Chronic Load}}$$
+The ML engine combines real-time Acute-to-Chronic Workload Ratio (ACWR) math with trained `scikit-learn` algorithms:
 
-- **ACWR < 0.8**: Under-training risk (potential deconditioning).
-- **0.8 ≤ ACWR ≤ 1.3**: Optimal training workload zone ("Sweet Spot").
-- **ACWR > 1.5**: High injury risk danger zone.
+1. **Session Training Load Formula**:
+   $$\text{Session Load (AU)} = \text{Duration (min)} \times \text{RPE Rating (1--10)}$$
 
-### 2. Machine Learning Pipelines
-- **Injury Risk Classifier**: `StandardScaler` + `LogisticRegression`. Predicts probability ($0.0 - 1.0$) of soft-tissue injury based on ACWR spikes, cumulative 28-day load, average RPE, and previous injury occurrences.
-- **Fitness Score Regressor**: `StandardScaler` + `LinearRegression`. Predicts athlete composite fitness score ($0 - 100$) based on vo2max estimates, sprint counts, top speeds, and session consistency.
-- **Joblib Artifact Storage**: Persisted in `backend/app/ml/artifacts/`.
+2. **Acute-to-Chronic Workload Ratio (ACWR)**:
+   $$\text{ATL}_7 = \frac{1}{7} \sum_{i=1}^{7} \text{Load}_i, \quad \text{CTL}_{28} = \frac{1}{28} \sum_{j=1}^{28} \text{Load}_j, \quad \text{ACWR} = \frac{\text{ATL}_7}{\text{CTL}_{28}}$$
+
+3. **Machine Learning Pipeline Models**:
+   - **Injury Classifier (`LogisticRegression`)**: Evaluates 18 workload attributes to predict injury risk probability ($89.63\%$ accuracy, $83.27\%$ ROC-AUC).
+   - **Fitness Regressor (`GradientBoostingRegressor`)**: Estimates continuous match readiness score ($0\text{--}100$).
+   - **Dynamic 1-Click Retraining Endpoint (`POST /ml/train`)**: Extracts live feature vectors directly from database squad records or CSV datasets to update `.joblib` model artifacts.
 
 ---
 
 ## 7. REST API Endpoint Reference
 
-All endpoints require standard `Authorization: Bearer <JWT_TOKEN>` headers except `/api/auth/login`.
-
-| Method | Endpoint | Description | Permission Required |
+| Method | Endpoint | Description | Auth Required |
 | :--- | :--- | :--- | :--- |
-| `POST` | `/api/auth/login` | Form login returning access token & user profile | Public |
-| `GET` | `/api/auth/me` | Fetch currently authenticated user session details | Authenticated |
-| `GET` | `/api/athletes` | List all athlete profiles | `athlete:read` |
-| `POST` | `/api/athletes` | Create new athlete profile | `athlete:write` |
-| `GET` | `/api/athletes/me` | Fetch athlete profile for logged-in user | `athlete:read:self` |
-| `GET` | `/api/athletes/{id}` | Fetch individual athlete details | `athlete:read` |
-| `GET` | `/api/training` | List training sessions | `training:read` |
+| `POST` | `/api/auth/login` | Authenticate user & return OAuth2 JWT token | Public |
+| `GET` | `/api/auth/me` | Return current authenticated user profile | Bearer Token |
+| `GET` | `/api/athletes` | List squad athletes | `athlete:read` |
+| `GET` | `/api/athletes/me` | Return current athlete's profile | `athlete:read:self` |
 | `POST` | `/api/training` | Create training session | `training:write` |
-| `POST` | `/api/attendance` | Log session attendance & RPE | `attendance:write` |
-| `GET` | `/api/performance` | Query athletic performance records | `performance:read` |
-| `POST` | `/api/injuries` | Record new athlete injury log | `injury:write` |
-| `POST` | `/api/ml/train` | Execute training pipeline for ML models | `Role.COACH` / `Role.ADMIN` |
-| `GET` | `/api/ml/predict/{athlete_id}`| Get injury risk & fitness prediction | `ml:read` |
-| `GET` | `/api/users` | List system users with optional search/role filters | `Role.ADMIN` |
-| `POST` | `/api/users` | Create new system user account | `Role.ADMIN` |
-| `PUT` | `/api/users/{id}/role` | Update user RBAC role | `Role.ADMIN` |
-| `PUT` | `/api/users/{id}/status` | Enable/disable user account status | `Role.ADMIN` |
-| `DELETE` | `/api/users/{id}` | Delete user account | `Role.ADMIN` |
-| `GET` | `/api/reports/export` | Export CSV report (attendance, facilities, memberships, users) | `attendance:read` / `Role.ADMIN` |
-| `GET` | `/api/facilities` | List facilities and availability | `facility:read` |
-| `GET` | `/api/memberships` | List athlete membership plans | `membership:read` |
-
-*Interactive OpenAPI Swagger documentation is accessible at **`http://localhost:8000/docs`**.*
+| `POST` | `/api/attendance` | Log session attendance & RPE rating | `attendance:write` |
+| `POST` | `/api/injuries` | Record active medical injury | `injury:write` |
+| `PATCH` | `/api/injuries/{id}/clear` | 1-Click Return-to-Play medical clearance | `injury:write` |
+| `POST` | `/api/ml/train` | Retrain ML injury & performance models | `Role.COACH` / `Role.ADMIN` |
+| `GET` | `/api/reports/export` | Download `.csv` report (users/attendance/facilities/memberships) | `reports:read` |
 
 ---
 
 ## 8. Troubleshooting & Frequently Asked Questions
 
-### ❓ Q: Why am I getting a 401 Unauthorized error on dashboard load?
-**Answer**: Your JWT session token has expired (tokens expire after 24 hours by default). Click **Sign Out** or navigate to `http://localhost:5173/login` to re-authenticate.
+### Q1: Why does login show "Invalid credentials"?
+**Answer**: Run `python seed.py` in your `backend/` directory to seed the database with the standard demo accounts (`admin@example.com`, `coach@example.com`, `physio@example.com`, `athlete@example.com`).
 
-### ❓ Q: How do I reset or re-seed demo data?
-**Answer**: Delete the SQLite database file (`backend/sportsclub.db`) and run the seed script:
-```powershell
-cd backend
-Remove-Item -Force sportsclub.db
-.venv\Scripts\python seed.py
-```
+### Q2: How does RPE update my workload gauge?
+**Answer**: When you log RPE (e.g. 8/10 for 90 min), the system calculates $720\text{ AU}$ session load, updates your 7-day Acute Load, recalculates your ACWR, and refreshes the readiness gauge and AI recovery directive immediately on screen.
 
-### ❓ Q: How do I run automated test suites?
-**Answer**:
-- Backend tests: `cd backend; .venv\Scripts\pytest`
-- Frontend unit tests: `cd frontend; npm run test -- --run`
-- Frontend production build check: `cd frontend; npm run build`
-
----
-*Sports Club AI Platform · User Manual & Technical Reference Guide*
+### Q3: Can I run the frontend and backend in production mode?
+**Answer**: Yes! Run `npm run build` in `frontend/` to generate static dist assets, and deploy FastAPI using `uvicorn app.main:app --host 0.0.0.0 --port 8000` or Docker Compose (`docker compose up --build`).
