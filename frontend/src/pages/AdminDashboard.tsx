@@ -87,6 +87,7 @@ export default function AdminDashboard() {
   const [newRole, setNewRole] = useState<'admin' | 'coach' | 'athlete' | 'physiotherapist' | 'staff'>('coach')
   const [createMsg, setCreateMsg] = useState<{ text: string; isError: boolean } | null>(null)
   const [creating, setCreating] = useState(false)
+  const [exportingEntity, setExportingEntity] = useState<string | null>(null)
 
   // Create Membership Form State
   const [showAddMembership, setShowAddMembership] = useState(false)
@@ -188,8 +189,9 @@ export default function AdminDashboard() {
   }
 
   const handleExportCSV = async (entity: 'users' | 'attendance' | 'facilities' | 'memberships') => {
+    setExportingEntity(entity)
     try {
-      const response = await api.get(`/reports/export?entity=${entity}`, {
+      const response = await api.get(`/reports/export?report_type=${entity}&entity=${entity}`, {
         responseType: 'blob',
       })
       const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' })
@@ -201,9 +203,21 @@ export default function AdminDashboard() {
       link.click()
       link.remove()
       URL.revokeObjectURL(url)
-    } catch (err) {
+    } catch (err: any) {
       console.error(`Export failed for ${entity}`, err)
-      alert(`Failed to export ${entity} data`)
+      let errorMsg = `Failed to export ${entity} data`
+      if (err.response?.data instanceof Blob) {
+        try {
+          const text = await err.response.data.text()
+          const json = JSON.parse(text)
+          if (json.detail) errorMsg = json.detail
+        } catch {}
+      } else if (err.response?.data?.detail) {
+        errorMsg = err.response.data.detail
+      }
+      alert(errorMsg)
+    } finally {
+      setExportingEntity(null)
     }
   }
 
@@ -728,9 +742,15 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => handleExportCSV('users')}
-                className="btn-base h-9 px-3 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold w-full"
+                disabled={exportingEntity === 'users'}
+                className="btn-base h-9 px-3 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold w-full disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" /> Export Users CSV
+                {exportingEntity === 'users' ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                {exportingEntity === 'users' ? 'Exporting...' : 'Export Users CSV'}
               </button>
             </Card>
 
@@ -744,9 +764,15 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => handleExportCSV('attendance')}
-                className="btn-base h-9 px-3 bg-accent-600 hover:bg-accent-500 text-white text-xs font-semibold w-full"
+                disabled={exportingEntity === 'attendance'}
+                className="btn-base h-9 px-3 bg-accent-600 hover:bg-accent-500 text-white text-xs font-semibold w-full disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" /> Export Attendance CSV
+                {exportingEntity === 'attendance' ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                {exportingEntity === 'attendance' ? 'Exporting...' : 'Export Attendance CSV'}
               </button>
             </Card>
 
@@ -760,9 +786,15 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => handleExportCSV('facilities')}
-                className="btn-base h-9 px-3 bg-info-600 hover:bg-info-500 text-white text-xs font-semibold w-full"
+                disabled={exportingEntity === 'facilities'}
+                className="btn-base h-9 px-3 bg-info-600 hover:bg-info-500 text-white text-xs font-semibold w-full disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" /> Export Facilities CSV
+                {exportingEntity === 'facilities' ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                {exportingEntity === 'facilities' ? 'Exporting...' : 'Export Facilities CSV'}
               </button>
             </Card>
 
@@ -776,9 +808,15 @@ export default function AdminDashboard() {
               </div>
               <button
                 onClick={() => handleExportCSV('memberships')}
-                className="btn-base h-9 px-3 bg-success-600 hover:bg-success-500 text-white text-xs font-semibold w-full"
+                disabled={exportingEntity === 'memberships'}
+                className="btn-base h-9 px-3 bg-success-600 hover:bg-success-500 text-white text-xs font-semibold w-full disabled:opacity-50"
               >
-                <Download className="w-3.5 h-3.5" /> Export Memberships CSV
+                {exportingEntity === 'memberships' ? (
+                  <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                ) : (
+                  <Download className="w-3.5 h-3.5" />
+                )}
+                {exportingEntity === 'memberships' ? 'Exporting...' : 'Export Memberships CSV'}
               </button>
             </Card>
           </div>
