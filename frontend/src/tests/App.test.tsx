@@ -5,6 +5,6 @@ import App from '../App'
 describe('App Routing', () => {
   it('renders login page by default when unauthenticated', async () => {
     render(<App />)
-    expect(await screen.findByRole('heading', { name: /Sports Club AI/i })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /Welcome Back/i })).toBeInTheDocument()
   })
 })

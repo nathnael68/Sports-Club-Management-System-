@@ -98,7 +98,7 @@ def google_login(payload: GoogleLoginRequest, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.email == email).first()
     if not user:
-        # Auto-provision new athlete account for new Google users
+        # Auto-provision new athlete account for new Google users in PENDING state
         full_name = id_info.get("name") or email.split("@")[0].capitalize()
         # Generate an unguessable password hash to fulfill non-null constraint
         random_pw = secrets.token_urlsafe(32)
@@ -107,7 +107,7 @@ def google_login(payload: GoogleLoginRequest, db: Session = Depends(get_db)):
             full_name=full_name,
             hashed_password=get_password_hash(random_pw),
             role=Role.ATHLETE,
-            is_active=True,
+            is_active=False,  # Requires administrator approval before first login
         )
         db.add(user)
         db.commit()
@@ -118,8 +118,16 @@ def google_login(payload: GoogleLoginRequest, db: Session = Depends(get_db)):
             db.add(Athlete(user_id=user.id))
             db.commit()
 
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account has been registered via Google and is pending administrator approval. Please contact your club administrator to activate your access.",
+        )
+
     if not user.is_active:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user account")
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Your account is pending administrator approval or has been suspended. Please contact your club administrator to activate your access.",
+        )
 
     token = create_access_token(str(user.id))
     return {"access_token": token, "token_type": "bearer"}

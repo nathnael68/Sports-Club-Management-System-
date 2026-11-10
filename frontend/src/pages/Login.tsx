@@ -155,9 +155,18 @@ export default function Login() {
           <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-500 via-accent-500 to-info-500" />
 
           {error && (
-            <div className="mb-5 p-3.5 rounded-xl bg-danger-500/10 border border-danger-500/20 text-danger-400 text-xs font-medium flex items-center gap-2 animate-fade-in">
-              <span className="w-1.5 h-1.5 rounded-full bg-danger-400 shrink-0" />
-              <span>{error}</span>
+            <div
+              className={`mb-5 p-3.5 rounded-xl text-xs font-medium flex items-start gap-2.5 animate-fade-in ${
+                error.toLowerCase().includes('pending')
+                  ? 'bg-warning-500/10 border border-warning-500/30 text-warning-400'
+                  : 'bg-danger-500/10 border border-danger-500/20 text-danger-400'
+              }`}
+            >
+              <span className={`w-2 h-2 rounded-full mt-1 shrink-0 ${error.toLowerCase().includes('pending') ? 'bg-warning-400' : 'bg-danger-400'}`} />
+              <div className="leading-relaxed">
+                {error.toLowerCase().includes('pending') && <strong className="block font-bold mb-0.5">Account Pending Approval</strong>}
+                <span>{error}</span>
+              </div>
             </div>
           )}
 

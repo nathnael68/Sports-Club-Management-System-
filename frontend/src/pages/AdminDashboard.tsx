@@ -167,9 +167,32 @@ export default function AdminDashboard() {
     }
   }
 
+  const handleAcceptUser = async (user: UserItem) => {
+    try {
+      await api.put(`/users/${user.id}/status`, { is_active: true })
+      setUsers(prev =>
+        prev.map(u => (u.id === user.id ? { ...u, is_active: true } : u))
+      )
+    } catch (err: any) {
+      alert(err.response?.data?.detail || 'Failed to accept user')
+    }
+  }
+
+  const handleDeclineUser = async (user: UserItem) => {
+    if (!window.confirm(`Are you sure you want to decline and remove the registration for "${user.full_name}" (${user.email})?`)) {
+      return
+    }
+    try {
+      await api.delete(`/users/${user.id}`)
+      setUsers(prev => prev.filter(u => u.id !== user.id))
+    } catch (err: any) {
+      alert(err.response?.data?.detail || 'Failed to decline user')
+    }
+  }
+
   const handleToggleStatus = async (user: UserItem) => {
     try {
-      await api.patch(`/users/${user.id}`, { is_active: !user.is_active })
+      await api.put(`/users/${user.id}/status`, { is_active: !user.is_active })
       setUsers(prev =>
         prev.map(u => (u.id === user.id ? { ...u, is_active: !u.is_active } : u))
       )
@@ -221,18 +244,31 @@ export default function AdminDashboard() {
     }
   }
 
+  const pendingUsers = users.filter(u => !u.is_active)
+
   const filteredUsers = users.filter(u => {
     const matchesSearch =
       u.full_name?.toLowerCase().includes(search.toLowerCase()) ||
       u.email.toLowerCase().includes(search.toLowerCase())
-    const matchesRole = roleFilter === 'all' || u.role === roleFilter
+    const matchesRole =
+      roleFilter === 'all'
+        ? true
+        : roleFilter === 'pending'
+        ? !u.is_active
+        : u.role === roleFilter
     return matchesSearch && matchesRole
   })
 
   // Navigation Items
   const navItems: SidebarNavItem[] = [
     { id: 'overview', label: 'Overview', icon: Activity },
-    { id: 'users', label: 'User Directory', icon: Users, badge: users.length, badgeVariant: 'brand' },
+    {
+      id: 'users',
+      label: 'User Directory',
+      icon: Users,
+      badge: pendingUsers.length > 0 ? `${pendingUsers.length} Pending` : users.length,
+      badgeVariant: pendingUsers.length > 0 ? 'warning' : 'brand',
+    },
     { id: 'memberships', label: 'Memberships & Billing', icon: CreditCard, badge: memberships.length, badgeVariant: 'success' },
     { id: 'reports', label: 'CSV Reports & Exports', icon: FileSpreadsheet },
   ]
@@ -275,6 +311,36 @@ export default function AdminDashboard() {
       {/* VIEW 1: OVERVIEW */}
       {activeTab === 'overview' && (
         <div className="space-y-6 animate-fade-in">
+          {/* Pending Approvals Alert Banner */}
+          {pendingUsers.length > 0 && (
+            <div className="p-4 rounded-2xl bg-warning-500/10 border border-warning-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-fade-in shadow-lg shadow-warning-500/5">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-warning-500/20 text-warning-400 flex items-center justify-center shrink-0">
+                  <Clock className="w-5 h-5 animate-pulse" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-text-primary flex items-center gap-2">
+                    <span>{pendingUsers.length} User Registration{pendingUsers.length > 1 ? 's' : ''} Pending Approval</span>
+                    <Badge variant="warning">Action Required</Badge>
+                  </h4>
+                  <p className="text-xs text-text-secondary mt-0.5">
+                    New accounts registered via Google or signup require administrator approval to enter the club portal.
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => {
+                  setRoleFilter('pending')
+                  setActiveTab('users')
+                }}
+                className="px-4 py-2 rounded-xl bg-warning-500 hover:bg-warning-400 text-black font-bold text-xs transition-all shadow-md shrink-0 flex items-center gap-1.5"
+              >
+                <CheckCircle2 className="w-4 h-4" />
+                Review & Approve ({pendingUsers.length})
+              </button>
+            </div>
+          )}
+
           {/* Top KPI Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             <StatCard
@@ -387,8 +453,8 @@ export default function AdminDashboard() {
                       <Badge variant="brand">{u.role.toUpperCase()}</Badge>
                     </DataTableCell>
                     <DataTableCell>
-                      <Badge variant={u.is_active ? 'success' : 'danger'}>
-                        {u.is_active ? 'ACTIVE' : 'SUSPENDED'}
+                      <Badge variant={u.is_active ? 'success' : 'warning'}>
+                        {u.is_active ? 'ACTIVE' : 'PENDING'}
                       </Badge>
                     </DataTableCell>
                   </DataTableRow>
@@ -415,18 +481,22 @@ export default function AdminDashboard() {
                   className="w-full pl-9 pr-3 py-2 rounded-xl input-human text-sm"
                 />
               </div>
-              <div className="flex items-center gap-1 p-1 bg-bg-surface border border-border-subtle rounded-xl">
-                {['all', 'admin', 'coach', 'athlete', 'physiotherapist', 'staff'].map(r => (
+              <div className="flex flex-wrap items-center gap-1 p-1 bg-bg-surface border border-border-subtle rounded-xl">
+                {['all', 'pending', 'admin', 'coach', 'athlete', 'physiotherapist', 'staff'].map(r => (
                   <button
                     key={r}
                     onClick={() => setRoleFilter(r)}
                     className={`px-3 py-1 text-xs font-semibold rounded-lg capitalize transition-all ${
                       roleFilter === r
-                        ? 'bg-brand-500 text-white'
+                        ? r === 'pending'
+                          ? 'bg-warning-500 text-black font-bold'
+                          : 'bg-brand-500 text-white'
+                        : r === 'pending' && pendingUsers.length > 0
+                        ? 'text-warning-400 hover:bg-warning-500/10'
                         : 'text-text-secondary hover:text-text-primary'
                     }`}
                   >
-                    {r === 'all' ? 'All Roles' : r}
+                    {r === 'all' ? 'All Roles' : r === 'pending' ? `Pending (${pendingUsers.length})` : r}
                   </button>
                 ))}
               </div>
@@ -538,26 +608,52 @@ export default function AdminDashboard() {
                         <Badge variant="brand">{u.role.toUpperCase()}</Badge>
                       </DataTableCell>
                       <DataTableCell>
-                        <button
-                          onClick={() => handleToggleStatus(u)}
-                          className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold transition-all ${
-                            u.is_active
-                              ? 'bg-success-500/10 text-success-400 border border-success-500/20 hover:bg-success-500/20'
-                              : 'bg-danger-500/10 text-danger-400 border border-danger-500/20 hover:bg-danger-500/20'
-                          }`}
-                        >
-                          {u.is_active ? <CheckCircle2 className="w-3.5 h-3.5" /> : <XCircle className="w-3.5 h-3.5" />}
-                          {u.is_active ? 'Active' : 'Suspended'}
-                        </button>
+                        {u.is_active ? (
+                          <Badge variant="success">ACTIVE</Badge>
+                        ) : (
+                          <Badge variant="warning">PENDING APPROVAL</Badge>
+                        )}
                       </DataTableCell>
                       <DataTableCell>
-                        <button
-                          onClick={() => handleDeleteUser(u.id)}
-                          className="p-1.5 rounded-lg text-text-tertiary hover:text-danger-400 hover:bg-danger-500/10 transition-colors"
-                          title="Delete user"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          {!u.is_active ? (
+                            <>
+                              <button
+                                onClick={() => handleAcceptUser(u)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-success-500/15 text-success-400 border border-success-500/30 hover:bg-success-500/25 transition-all shadow-sm"
+                                title="Accept & activate registration"
+                              >
+                                <CheckCircle2 className="w-3.5 h-3.5" />
+                                <span>Accept</span>
+                              </button>
+                              <button
+                                onClick={() => handleDeclineUser(u)}
+                                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-semibold bg-danger-500/15 text-danger-400 border border-danger-500/30 hover:bg-danger-500/25 transition-all shadow-sm"
+                                title="Decline & remove registration"
+                              >
+                                <XCircle className="w-3.5 h-3.5" />
+                                <span>Decline</span>
+                              </button>
+                            </>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => handleToggleStatus(u)}
+                                className="px-2.5 py-1 rounded-lg text-xs font-medium text-text-tertiary hover:text-warning-400 hover:bg-warning-500/10 transition-all"
+                                title="Suspend account"
+                              >
+                                Suspend
+                              </button>
+                              <button
+                                onClick={() => handleDeleteUser(u.id)}
+                                className="p-1.5 rounded-lg text-text-tertiary hover:text-danger-400 hover:bg-danger-500/10 transition-colors"
+                                title="Delete user"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </DataTableCell>
                     </DataTableRow>
                   ))}

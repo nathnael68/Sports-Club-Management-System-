@@ -39,3 +39,19 @@ def test_google_login_success_and_provision():
             data = response.json()
             assert "access_token" in data
             assert data["token_type"] == "bearer"
+
+def test_google_login_new_user_pending_approval():
+    import uuid
+    random_email = f"pending_athlete_{uuid.uuid4().hex[:6]}@example.com"
+    mock_payload = {
+        "email": random_email,
+        "name": "Pending Approval Athlete",
+        "email_verified": True,
+        "sub": "9876543210",
+    }
+    with patch.object(settings, "GOOGLE_CLIENT_ID", "test-client-id.apps.googleusercontent.com"):
+        with patch("google.oauth2.id_token.verify_oauth2_token", return_value=mock_payload):
+            # First attempt: new user is provisioned with is_active=False and receives 403 pending approval
+            response = client.post("/api/auth/google", json={"id_token": "pending-token"})
+            assert response.status_code == 403
+            assert "pending administrator approval" in response.json()["detail"]

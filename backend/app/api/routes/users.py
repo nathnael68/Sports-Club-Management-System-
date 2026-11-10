@@ -115,6 +115,26 @@ def update_user_status(
     return user
 
 
+@router.patch("/{user_id}", response_model=UserOut)
+def patch_user_direct(
+    user_id: int,
+    payload: UserStatusUpdate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(require_role(Role.ADMIN)),
+):
+    return update_user_status(user_id, payload, db, current_admin)
+
+
+@router.patch("/{user_id}/status", response_model=UserOut)
+def patch_user_status(
+    user_id: int,
+    payload: UserStatusUpdate,
+    db: Session = Depends(get_db),
+    current_admin: User = Depends(require_role(Role.ADMIN)),
+):
+    return update_user_status(user_id, payload, db, current_admin)
+
+
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_user(
     user_id: int,
