@@ -2,12 +2,6 @@
 
 <div align="center">
 
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.115+-009688.svg?style=flat-square&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com)
-[![React](https://img.shields.io/badge/React-19.2+-61DAFB.svg?style=flat-square&logo=react&logoColor=black)](https://react.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-6.0+-3178C6.svg?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Python](https://img.shields.io/badge/Python-3.11+-3776AB.svg?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
-[![Scikit-Learn](https://img.shields.io/badge/Scikit--Learn-1.5+-F7931E.svg?style=flat-square&logo=scikitlearn&logoColor=white)](https://scikit-learn.org/)
-[![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC.svg?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
 **AI-powered sports management platform that predicts athletic injury risks and streamlines club operations.**
 
@@ -70,19 +64,6 @@ npm install
 npm run dev
 ```
 * Web Application: [http://localhost:5173](http://localhost:5173)
-
----
-
-## 🔑 Quick Demo Accounts
-
-Click any demo button on the login screen to autofill:
-
-| Role | Email | Password | Primary Portal |
-| :--- | :--- | :--- | :--- |
-| 👑 **Admin** | `admin@example.com` | `admin123` | `/dashboard/admin` |
-| 🏆 **Coach** | `coach@example.com` | `coach123` | `/dashboard/coach` |
-| 🩺 **Physio / Staff** | `physio@example.com` | `physio123` | `/dashboard/staff` |
-| ⚡ **Athlete** | `athlete@example.com` | `athlete123` | `/dashboard/athlete` |
 
 ---
 
